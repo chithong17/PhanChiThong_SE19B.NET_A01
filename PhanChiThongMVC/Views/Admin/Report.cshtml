@@ -1,0 +1,38 @@
+@model IEnumerable<PhanChiThong_DataAccess.Models.NewsArticle>
+@{ ViewData["Title"] = "Report Statistics"; }
+<div class="card border-0 shadow-sm rounded-0 p-4 bg-white">
+    <h2 class="fw-bolder mb-4 text-uppercase">News Articles Report</h2>
+    <form method="get" action="/Admin/Report" class="row mb-4">
+        <div class="col-md-4">
+            <label class="fw-semibold">Start Date</label>
+            <input type="date" name="startDate" value="@ViewBag.StartDate" class="form-control rounded-0" />
+        </div>
+        <div class="col-md-4">
+            <label class="fw-semibold">End Date</label>
+            <input type="date" name="endDate" value="@ViewBag.EndDate" class="form-control rounded-0" />
+        </div>
+        <div class="col-md-4 d-flex align-items-end gap-2">
+            <button type="submit" class="btn btn-dark rounded-0 px-4">Filter</button>
+            <button type="submit" formaction="/Admin/ExportReport" class="btn btn-outline-dark rounded-0 px-4">Export to CSV</button>
+        </div>
+    </form>
+    
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-dark">
+                <tr><th>ID</th><th>Title</th><th>Created Date</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model) {
+                    <tr>
+                        <td>@item.NewsArticleId</td><td class="fw-semibold">@item.NewsTitle</td><td>@item.CreatedDate?.ToString("yyyy-MM-dd")</td>
+                        <td>
+                            @if(item.NewsStatus == true) { <span class="badge badge-orange rounded-0">Active</span> }
+                            else { <span class="badge bg-secondary rounded-0">Inactive</span> }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

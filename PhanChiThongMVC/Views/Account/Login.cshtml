@@ -1,0 +1,136 @@
+@{
+    Layout = null;
+    ViewData["Title"] = "Sign into FUNEWS";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+        .login-wrapper {
+            height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('@Url.Content("~/images/login-bg.jpg")') no-repeat center center/cover;
+            display: flex;
+            align-items: center;
+        }
+        .hero-text {
+            color: white;
+            padding-left: 10%;
+        }
+        .hero-text h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            color: white !important;
+        }
+        .hero-text p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            letter-spacing: 1px;
+        }
+        .login-card-container {
+            padding-right: 10%;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .login-card {
+            background-color: var(--primary-white);
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            box-shadow: 0 1rem 3rem rgba(0,0,0,0.5);
+        }
+        .login-card h3 {
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        .login-card label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        .login-card .form-control {
+            border-radius: 0;
+            padding: 12px;
+            margin-bottom: 20px;
+        }
+        .login-card .btn-orange {
+            padding: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            width: 100%;
+            border-radius: 0;
+        }
+        .logo-top {
+            position: absolute;
+            top: 30px;
+            left: 5%;
+            color: white;
+            font-size: 2rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <a asp-controller="Home" asp-action="Index" class="logo-top">FUNEWS</a>
+    
+    <div class="login-wrapper w-100">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-lg-7 d-none d-lg-block">
+                    <div class="hero-text">
+                        <h1>The world's defining sports moments, captured.</h1>
+                        <p class="text-uppercase">Access your portal to publish, manage, and engage.</p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-5 col-md-12 login-card-container justify-content-center justify-content-lg-end">
+                    <div class="login-card rounded-0">
+                        <h3>Sign into FUNEWS</h3>
+                        <p class="text-muted" style="font-size: 0.9rem; margin-bottom: 30px;">
+                            Don't have an account? <a href="#" class="text-decoration-none text-dark fw-bold border-bottom border-dark">Contact Admin</a>
+                        </p>
+
+                        @if (ViewBag.Error != null)
+                        {
+                            <div class="alert alert-danger rounded-0 py-2">@ViewBag.Error</div>
+                        }
+
+                        <form method="post" action="/Account/Login">
+                            <label for="email">Account email</label>
+                            <input type="email" class="form-control" id="email" name="email" required placeholder="name@example.com">
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                <label for="password">Password</label>
+                            </div>
+                            <input type="password" class="form-control" id="password" name="password" required placeholder="••••••••">
+                            
+                            <br />
+                            <p class="text-muted" style="font-size: 0.8rem; margin-bottom: 20px;">
+                                By continuing, you agree to the <a href="#" class="text-dark fw-bold text-decoration-none border-bottom border-dark">Platform Terms</a> and <a href="#" class="text-dark fw-bold text-decoration-none border-bottom border-dark">Privacy Policy</a>
+                            </p>
+
+                            <button type="submit" class="btn btn-orange text-uppercase">Continue</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

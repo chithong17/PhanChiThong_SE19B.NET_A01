@@ -1,0 +1,76 @@
+@model IEnumerable<PhanChiThong_DataAccess.Models.NewsArticle>
+@{ ViewData["Title"] = "All News"; }
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
+        <h2 class="fw-bolder mb-0 fs-3 text-uppercase">All News</h2>
+        <a href="/" class="text-decoration-none fw-bold text-muted" style="font-size: 0.85rem; text-transform: uppercase;">&larr; Back to Home</a>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-lg-3 col-md-6 mb-5">
+                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                    {
+                        <a href="/Home/Details/@item.NewsArticleId">
+                            <img src="@item.ImageUrl" class="w-100 mb-3 shadow-sm" style="object-fit: cover; height: 200px; border-radius: 8px;" alt="..." />
+                        </a>
+                    }
+                    else 
+                    {
+                        <div class="w-100 mb-3 shadow-sm bg-light d-flex align-items-center justify-content-center" style="height: 200px; border-radius: 8px;">
+                            <span class="text-muted"><i class="bi bi-image" style="font-size: 2rem;"></i></span>
+                        </div>
+                    }
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="fw-bold text-uppercase" style="font-size: 0.75rem; color: #111;">@(item.CreatedBy?.AccountName ?? "Admin")</div>
+                        <div class="ms-2 text-muted" style="font-size: 0.75rem;">&bull; @item.ViewCount Views</div>
+                    </div>
+                    <a href="/Home/Details/@item.NewsArticleId" class="text-decoration-none">
+                        <h5 class="fw-bold card-title-hover" style="font-size: 1.1rem; line-height: 1.4;">@item.NewsTitle</h5>
+                    </a>
+                    <p class="text-muted mt-2 mb-2" style="font-size: 0.85rem; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">@item.Headline</p>
+                    <div class="text-muted text-uppercase mt-auto" style="font-size: 0.7rem; font-weight: 600;">
+                        <span class="text-orange me-2">@item.Category?.CategoryName</span> @item.CreatedDate?.ToString("MMM dd, yyyy")
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Pagination -->
+        @if (ViewBag.TotalPages > 1)
+        {
+            <nav class="mt-4">
+                <ul class="pagination justify-content-center">
+                    <!-- Previous -->
+                    <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
+                        <a class="page-link rounded-0 text-dark fw-bold" href="/Home/AllNews?page=@(ViewBag.CurrentPage - 1)">Previous</a>
+                    </li>
+                    
+                    <!-- Page Numbers -->
+                    @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                            <a class="page-link rounded-0 @(i == ViewBag.CurrentPage ? "bg-orange border-orange text-white" : "text-dark fw-bold")" href="/Home/AllNews?page=@i">@i</a>
+                        </li>
+                    }
+                    
+                    <!-- Next -->
+                    <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
+                        <a class="page-link rounded-0 text-dark fw-bold" href="/Home/AllNews?page=@(ViewBag.CurrentPage + 1)">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        }
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <i class="bi bi-journal-x text-muted mb-3" style="font-size: 3rem;"></i>
+            <h4 class="text-muted">No news articles found.</h4>
+        </div>
+    }
+</div>

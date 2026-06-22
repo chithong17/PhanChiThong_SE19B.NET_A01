@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - FUNews</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <header>
+        <!-- Top Black Header -->
+        <div class="bg-black text-white py-3">
+            <div class="container d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <a asp-controller="Home" asp-action="Index" class="text-white text-decoration-none fs-4 fw-bolder me-5">FUNEWS</a>
+                    <nav class="d-none d-md-flex gap-4 text-uppercase" style="font-size: 0.8rem; font-weight: 600;">
+                        <a asp-controller="Home" asp-action="Index" class="text-white text-decoration-none">Home</a>
+                        @if (Context.Session.GetInt32("Role") == 0) {
+                            <a asp-controller="Admin" asp-action="Dashboard" class="text-white text-decoration-none">Dashboard</a>
+                            <a asp-controller="Admin" asp-action="Index" class="text-white text-decoration-none">Accounts</a>
+                            <a asp-controller="Admin" asp-action="Report" class="text-white text-decoration-none">Report</a>
+                        } else if (Context.Session.GetInt32("Role") == 1) {
+                            <a asp-controller="Category" asp-action="Index" class="text-white text-decoration-none">Categories</a>
+                            <a asp-controller="NewsArticle" asp-action="Index" class="text-white text-decoration-none">Articles</a>
+                            <a asp-controller="Staff" asp-action="History" class="text-white text-decoration-none">History</a>
+                            <a asp-controller="Staff" asp-action="Profile" class="text-white text-decoration-none">Profile</a>
+                        }
+                    </nav>
+                </div>
+                <div>
+                    @if (Context.Session.GetString("Email") != null) {
+                        <span class="text-white-50 me-3 text-uppercase" style="font-size: 0.8rem;">@Context.Session.GetString("Email")</span>
+                        <a asp-controller="Account" asp-action="Logout" class="btn btn-sm btn-outline-light rounded-0 fw-bold px-3">LOGOUT</a>
+                    } else {
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-sm text-white rounded-0 fw-bold px-4 py-2" style="background-color: var(--accent-orange); border: none;">SUBSCRIBE</a>
+                    }
+                </div>
+            </div>
+        </div>
+        <!-- Sub White Header -->
+        @if (ViewContext.RouteData.Values["controller"]?.ToString() == "Home")
+        {
+            <div class="bg-white py-2 border-bottom shadow-sm">
+                <div class="container d-flex justify-content-between align-items-center">
+                    <div>
+                        <button class="btn btn-sm btn-dark rounded-0 px-2 py-1 fw-bold">☰</button>
+                    </div>
+                    <div class="fw-bold text-uppercase" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                        GET THE LATEST UPDATES FROM FUNEWS
+                    </div>
+                    <div>
+                        <form method="get" asp-controller="Home" asp-action="Search" class="d-flex m-0">
+                            <input type="text" name="query" class="form-control form-control-sm rounded-0 border-end-0" placeholder="Search news..." style="width: 200px;" required>
+                            <button type="submit" class="btn btn-sm btn-outline-dark rounded-0 px-3 py-1"><i class="bi bi-search"></i></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </header>
+    
+    <div class="container flex-grow-1 bg-white p-4 shadow-sm mt-3 mb-5" style="border-radius: 4px;">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer>
+        <div class="container d-flex justify-content-between align-items-center">
+            <div>
+                <h4 class="text-white fw-bolder mb-2">FUNEWS</h4>
+                <p class="text-white-50 mb-0" style="font-size: 0.85rem;">Latest Headlines: Breaking News and Updates</p>
+            </div>
+            <div class="text-end">
+                <p class="text-white-50 mb-1" style="font-size: 0.8rem;">SUBSCRIBE To Newsletter</p>
+                <div class="d-flex">
+                    <input type="email" class="form-control form-control-sm rounded-0 border-0" placeholder="Email address" style="width: 200px;">
+                    <button class="btn btn-sm rounded-0 text-white fw-bold" style="background-color: var(--accent-orange);">SUBSCRIBE</button>
+                </div>
+            </div>
+        </div>
+        <div class="container mt-5 pt-4 border-top border-secondary text-white-50" style="font-size: 0.85rem;">
+            &copy; 2026 FUNewsManagement.
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

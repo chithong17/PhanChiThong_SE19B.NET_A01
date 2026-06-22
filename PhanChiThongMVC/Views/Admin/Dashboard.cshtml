@@ -1,0 +1,129 @@
+@{ ViewData["Title"] = "Admin Dashboard"; }
+
+<h2 class="fw-bolder mb-4">System Analytics Dashboard</h2>
+
+<!-- 4 KPI Cards -->
+<div class="row mb-5">
+    <div class="col-md-3">
+        <div class="card bg-dark text-white shadow-sm border-0 rounded-0 h-100">
+            <div class="card-body py-4">
+                <h6 class="text-uppercase text-white-50 fw-bold mb-3" style="font-size: 0.8rem; letter-spacing: 1px;">Total Articles</h6>
+                <h2 class="fw-bolder mb-0 text-white">@ViewBag.TotalArticles</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 rounded-0 h-100" style="background-color: var(--accent-orange); color: white;">
+            <div class="card-body py-4">
+                <h6 class="text-uppercase fw-bold mb-3" style="font-size: 0.8rem; letter-spacing: 1px; color: rgba(255,255,255,0.8);">Total Views</h6>
+                <h2 class="fw-bolder mb-0 text-white">@ViewBag.TotalViews</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-light shadow-sm border-0 rounded-0 h-100">
+            <div class="card-body py-4">
+                <h6 class="text-uppercase text-muted fw-bold mb-3" style="font-size: 0.8rem; letter-spacing: 1px;">Active Staffs</h6>
+                <h2 class="fw-bolder mb-0" style="color: #111;">@ViewBag.TotalStaffs</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-light shadow-sm border-0 rounded-0 h-100">
+            <div class="card-body py-4">
+                <h6 class="text-uppercase text-muted fw-bold mb-3" style="font-size: 0.8rem; letter-spacing: 1px;">Categories</h6>
+                <h2 class="fw-bolder mb-0" style="color: #111;">@ViewBag.TotalCategories</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Section -->
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm border-0 rounded-0 h-100">
+            <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+                <h5 class="fw-bold mb-0 text-uppercase" style="font-size: 1rem;">Views by Category</h5>
+            </div>
+            <div class="card-body p-4 d-flex justify-content-center">
+                <div style="width: 100%; max-width: 350px;">
+                    <canvas id="pieChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm border-0 rounded-0 h-100">
+            <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+                <h5 class="fw-bold mb-0 text-uppercase" style="font-size: 1rem;">Articles Written by Staff</h5>
+            </div>
+            <div class="card-body p-4">
+                <canvas id="barChart" style="min-height: 250px;"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Thư viện Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Lấy dữ liệu từ ViewBag
+        const pieLabels = @Html.Raw(ViewBag.PieLabels ?? "[]");
+        const pieData = @Html.Raw(ViewBag.PieData ?? "[]");
+        const barLabels = @Html.Raw(ViewBag.BarLabels ?? "[]");
+        const barData = @Html.Raw(ViewBag.BarData ?? "[]");
+
+        // Màu sắc chủ đạo (đen, cam, xám)
+        const colors = [
+            '#FF5722', '#212529', '#6c757d', '#adb5bd', '#f8f9fa', '#ced4da'
+        ];
+
+        // Khởi tạo Pie Chart
+        if (pieLabels.length > 0) {
+            new Chart(document.getElementById('pieChart'), {
+                type: 'pie',
+                data: {
+                    labels: pieLabels,
+                    datasets: [{
+                        data: pieData,
+                        backgroundColor: colors,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        }
+
+        // Khởi tạo Bar Chart
+        if (barLabels.length > 0) {
+            new Chart(document.getElementById('barChart'), {
+                type: 'bar',
+                data: {
+                    labels: barLabels,
+                    datasets: [{
+                        label: 'Number of Articles',
+                        data: barData,
+                        backgroundColor: '#FF5722',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, ticks: { stepSize: 1 } }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+    </script>
+}

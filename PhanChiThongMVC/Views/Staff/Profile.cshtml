@@ -1,0 +1,14 @@
+@model PhanChiThong_DataAccess.Models.SystemAccount
+@{ ViewData["Title"] = "My Profile"; }
+<div class="card border-0 shadow-sm rounded-0 p-4 bg-white" style="max-width: 600px; margin: 0 auto;">
+    <h2 class="fw-bolder mb-4 text-uppercase">My Profile</h2>
+    @if (ViewBag.Message != null) { <div class="alert alert-success rounded-0">@ViewBag.Message</div> }
+    <form method="post" action="/Staff/UpdateProfile">
+        <input type="hidden" asp-for="AccountId" />
+        <input type="hidden" asp-for="AccountRole" />
+        <div class="mb-3"><label class="fw-semibold">Name</label><input asp-for="AccountName" class="form-control rounded-0" required /></div>
+        <div class="mb-3"><label class="fw-semibold">Email</label><input asp-for="AccountEmail" class="form-control rounded-0" required /></div>
+        <div class="mb-3"><label class="fw-semibold">Password</label><input asp-for="AccountPassword" type="password" class="form-control rounded-0" placeholder="Leave blank to keep current password" /></div>
+        <button type="submit" class="btn btn-dark rounded-0 px-4 w-100 mt-2">Update Profile</button>
+    </form>
+</div>

@@ -1,0 +1,124 @@
+@model IEnumerable<PhanChiThong_DataAccess.Models.NewsArticle>
+@{ ViewData["Title"] = "Home Page"; }
+
+<div class="row pt-2">
+    @if (Model != null && Model.Count() >= 5)
+    {
+        var mainHero = Model.ElementAt(0);
+        var rightHeroes = Model.Skip(1).Take(3).ToList();
+        var secondaryHeroes = Model.Skip(4).Take(2).ToList();
+        var latestArticles = Model.Skip(6).Take(4).ToList();
+        
+        <!-- Top Hero Section -->
+        <div class="col-lg-8 pe-lg-4 mb-4">
+            <div class="d-flex align-items-center mb-3">
+                <img src="https://ui-avatars.com/api/?name=@(mainHero.CreatedBy?.AccountName ?? "Editorial")&background=random" class="rounded-circle me-3" width="45" height="45" alt="Author" />
+                <div>
+                    <div class="fw-bold" style="font-size: 0.95rem; color: #111;">@(mainHero.CreatedBy?.AccountName ?? "Editorial Team")</div>
+                    <div class="text-muted" style="font-size: 0.8rem;">Author</div>
+                </div>
+            </div>
+            <a href="/Home/Details/@mainHero.NewsArticleId" class="text-decoration-none">
+                <h1 class="fw-bolder mb-3 card-title-hover" style="font-size: 2.5rem; line-height: 1.2; letter-spacing: -1px;">@mainHero.NewsTitle</h1>
+            </a>
+            <div class="mb-3 d-flex align-items-center text-muted" style="font-size: 0.85rem;">
+                <span class="text-orange fw-bold">@mainHero.Category?.CategoryName</span>
+                <span class="mx-2">|</span>
+                <span>@mainHero.ViewCount Views</span>
+            </div>
+            @if (!string.IsNullOrEmpty(mainHero.ImageUrl)) {
+                <a href="/Home/Details/@mainHero.NewsArticleId">
+                    <img src="@mainHero.ImageUrl" class="img-fluid w-100 mt-2" style="object-fit: cover; height: 420px; border-radius: 8px;" alt="..." />
+                </a>
+            }
+        </div>
+        
+        <!-- Right Side Articles -->
+        <div class="col-lg-4 mb-4">
+            <div class="d-flex flex-column justify-content-end gap-4 h-100 pb-1">
+            @foreach(var item in rightHeroes) {
+                <div class="d-flex align-items-center">
+                    <div class="pe-3 flex-grow-1" style="max-width: calc(100% - 160px);">
+                        <a href="/Home/Details/@item.NewsArticleId" class="text-decoration-none">
+                            <h4 class="fw-bold card-title-hover mb-2" style="font-size: 1.05rem; line-height: 1.35;">@item.NewsTitle</h4>
+                        </a>
+                        <p class="text-muted mb-2" style="font-size: 0.85rem; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">@item.Headline</p>
+                        <div class="text-muted" style="font-size: 0.8rem;">
+                            <span class="text-orange fw-bold">@item.Category?.CategoryName</span>
+                            <span class="mx-2">|</span>
+                            <span>@item.ViewCount Views</span>
+                        </div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(item.ImageUrl)) {
+                        <div style="width: 160px; height: 110px; flex-shrink: 0;">
+                            <a href="/Home/Details/@item.NewsArticleId">
+                                <img src="@item.ImageUrl" class="w-100 h-100 shadow-sm" style="object-fit: cover; border-radius: 8px;" alt="..." />
+                            </a>
+                        </div>
+                    }
+                </div>
+            }
+            </div>
+        </div>
+
+        <!-- Secondary Hero Section -->
+        <div class="col-12 mt-4 mb-5">
+            <div class="row">
+            @foreach(var item in secondaryHeroes) {
+                <div class="col-md-6 mb-3">
+                    <a href="/Home/Details/@item.NewsArticleId" class="text-decoration-none">
+                        <div class="position-relative" style="height: 320px; border-radius: 8px; overflow: hidden;">
+                            @if (!string.IsNullOrEmpty(item.ImageUrl)) {
+                                <img src="@item.ImageUrl" class="w-100 h-100" style="object-fit: cover; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" alt="..." />
+                            }
+                            <div class="position-absolute bottom-0 start-0 w-100 p-4" style="background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);">
+                                <div class="text-white text-uppercase mb-2" style="font-size: 0.75rem; font-weight: 600;">
+                                    <span>@item.Category?.CategoryName</span> &bull; @item.ViewCount Views
+                                </div>
+                                <h3 class="text-white fw-bold mb-0" style="font-size: 1.4rem; line-height: 1.3;">@item.NewsTitle</h3>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+            </div>
+        </div>
+
+        <!-- Latest Articles Section -->
+        @if (latestArticles.Any()) {
+            <div class="col-12 mt-2">
+                <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
+                    <h3 class="fw-bolder mb-0 fs-4">Latest Articles</h3>
+                    <a href="/Home/AllNews" class="text-decoration-none fw-bold text-orange" style="font-size: 0.85rem; text-transform: uppercase;">Show More &rarr;</a>
+                </div>
+                <div class="row">
+                @foreach(var item in latestArticles) {
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        @if (!string.IsNullOrEmpty(item.ImageUrl)) {
+                            <a href="/Home/Details/@item.NewsArticleId">
+                                <img src="@item.ImageUrl" class="w-100 mb-3" style="object-fit: cover; height: 180px; border-radius: 6px;" alt="..." />
+                            </a>
+                        }
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="fw-bold text-uppercase" style="font-size: 0.75rem; color: #111;">@(item.CreatedBy?.AccountName ?? "Admin")</div>
+                            <div class="ms-2 text-muted" style="font-size: 0.75rem;">&bull; @item.ViewCount Views</div>
+                        </div>
+                        <a href="/Home/Details/@item.NewsArticleId" class="text-decoration-none">
+                            <h5 class="fw-bold card-title-hover" style="font-size: 1rem; line-height: 1.4;">@item.NewsTitle</h5>
+                        </a>
+                        <div class="text-muted text-uppercase mt-2" style="font-size: 0.7rem; font-weight: 600;">
+                            <span class="text-orange me-2">@item.Category?.CategoryName</span> @item.CreatedDate?.ToString("MMM dd")
+                        </div>
+                    </div>
+                }
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12 text-center py-5">
+            <h4 class="text-muted">No articles available.</h4>
+        </div>
+    }
+</div>

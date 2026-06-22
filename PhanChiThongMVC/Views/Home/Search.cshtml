@@ -1,0 +1,46 @@
+@model IEnumerable<PhanChiThong_DataAccess.Models.NewsArticle>
+@{ ViewData["Title"] = "Search Results"; }
+
+<div class="row pt-4">
+    <div class="col-12 mb-4">
+        <h2 class="fw-bolder">Search Results for "<span class="text-orange">@ViewBag.Query</span>"</h2>
+        <p class="text-muted">Found @Model.Count() articles matching your search.</p>
+        <hr />
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="col-12">
+            <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-lg-3 col-md-6 mb-4">
+                    @if (!string.IsNullOrEmpty(item.ImageUrl)) {
+                        <a href="/Home/Details/@item.NewsArticleId">
+                            <img src="@item.ImageUrl" class="w-100 mb-3 shadow-sm" style="object-fit: cover; height: 180px; border-radius: 6px;" alt="..." />
+                        </a>
+                    }
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="fw-bold text-uppercase" style="font-size: 0.75rem; color: #111;">@(item.CreatedBy?.AccountName ?? "Admin")</div>
+                        <div class="ms-2 text-muted" style="font-size: 0.75rem;">&bull; @item.ViewCount Views</div>
+                    </div>
+                    <a href="/Home/Details/@item.NewsArticleId" class="text-decoration-none">
+                        <h5 class="fw-bold card-title-hover" style="font-size: 1.05rem; line-height: 1.4;">@item.NewsTitle</h5>
+                    </a>
+                    <div class="text-muted text-uppercase mt-2" style="font-size: 0.75rem; font-weight: 600;">
+                        <span class="text-orange me-2">@item.Category?.CategoryName</span> @item.CreatedDate?.ToString("MMM dd")
+                    </div>
+                </div>
+            }
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="col-12 text-center py-5 my-5">
+            <h3 class="text-muted fw-bold">No results found</h3>
+            <p class="text-muted">Try adjusting your search query or browse our latest news.</p>
+            <a href="/" class="btn btn-dark mt-3 px-4 py-2 fw-bold">Back to Home</a>
+        </div>
+    }
+</div>

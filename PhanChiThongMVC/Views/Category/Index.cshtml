@@ -1,0 +1,73 @@
+@model IEnumerable<PhanChiThong_DataAccess.Models.Category>
+@{ ViewData["Title"] = "Manage Categories"; }
+<div class="card border-0 shadow-sm rounded-0 p-4 bg-white">
+    <h2 class="fw-bolder mb-4 text-uppercase">Manage Categories</h2>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger rounded-0">@TempData["Error"]</div>
+    }
+
+    <div class="mb-3">
+        <button class="btn btn-orange rounded-0 shadow-sm fw-bold" data-bs-toggle="modal" data-bs-target="#categoryModal" onclick="clearForm()">
+            Create New Category
+        </button>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-dark">
+                <tr><th>ID</th><th>Name</th><th>Description</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model) {
+                    <tr>
+                        <td>@item.CategoryId</td><td class="fw-semibold">@item.CategoryName</td><td>@item.CategoryDesciption</td>
+                        <td>
+                            @if(item.IsActive == true) { <span class="badge badge-orange rounded-0">Active</span> }
+                            else { <span class="badge bg-secondary rounded-0">Inactive</span> }
+                        </td>
+                        <td class="text-nowrap">
+                            <button class="btn btn-outline-dark btn-sm rounded-0 me-1" onclick="editCat(@item.CategoryId, '@item.CategoryName', '@item.CategoryDesciption', @(item.IsActive==true?"true":"false"))" data-bs-toggle="modal" data-bs-target="#categoryModal">Edit</button>
+                            <a href="/Category/Delete/@item.CategoryId" class="btn btn-outline-danger btn-sm rounded-0" onclick="return confirm('Delete this category?');">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="categoryModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-0 border-0 shadow">
+      <form method="post" action="/Category/Save">
+          <div class="modal-header bg-dark text-white rounded-0 border-0">
+              <h5 class="modal-title fw-bold text-uppercase">Category</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body p-4">
+              <input type="hidden" name="CategoryId" id="CategoryId" value="0" />
+              <div class="mb-3"><label class="fw-semibold">Name</label><input type="text" name="CategoryName" id="CategoryName" class="form-control rounded-0" required /></div>
+              <div class="mb-3"><label class="fw-semibold">Description</label><input type="text" name="CategoryDesciption" id="CategoryDesciption" class="form-control rounded-0" required /></div>
+              <div class="mb-3">
+                  <label class="fw-semibold">Status</label>
+                  <select name="IsActive" id="IsActive" class="form-select rounded-0">
+                      <option value="true">Active</option>
+                      <option value="false">Inactive</option>
+                  </select>
+              </div>
+          </div>
+          <div class="modal-footer border-0 bg-light">
+              <button type="submit" class="btn btn-dark rounded-0 px-4">Save</button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+@section Scripts {
+    <script>
+        function clearForm() { $('#CategoryId').val('0'); $('#CategoryName').val(''); $('#CategoryDesciption').val(''); $('#IsActive').val('true'); }
+        function editCat(id, name, desc, active) { $('#CategoryId').val(id); $('#CategoryName').val(name); $('#CategoryDesciption').val(desc); $('#IsActive').val(active ? 'true' : 'false'); }
+    </script>
+}

@@ -1,0 +1,74 @@
+@model PhanChiThong_DataAccess.Models.NewsArticle
+@{ ViewData["Title"] = Model.NewsTitle; }
+
+<div class="row pt-4">
+    <div class="col-lg-8 pe-lg-5">
+        <div class="mb-4">
+            <a asp-action="Index" class="text-decoration-none fw-bold" style="color: var(--accent-orange); font-size: 0.85rem; text-transform: uppercase;">&larr; BACK TO NEWS</a>
+        </div>
+        
+        <div class="mb-3 d-flex align-items-center">
+            <span class="badge badge-orange rounded-0 me-2 px-2 py-1 text-uppercase">@Model.Category?.CategoryName</span>
+            <span class="text-muted text-uppercase" style="font-size: 0.75rem; font-weight: 600;">@Model.CreatedDate?.ToString("d MMMM yyyy")</span>
+        </div>
+        
+        <h1 class="fw-bolder mb-3" style="font-size: 2.5rem; line-height: 1.2; letter-spacing: -1px; color: #111;">@Model.NewsTitle</h1>
+        <h4 class="text-muted mb-4" style="font-weight: 400; line-height: 1.5; font-size: 1.25rem;">@Model.Headline</h4>
+        
+        <div class="d-flex align-items-center mb-4 pb-4 border-bottom">
+            <div class="fw-bold text-uppercase" style="font-size: 0.85rem; color: #111;">By @(Model.CreatedBy?.AccountName ?? "Editorial Team")</div>
+            <div class="ms-auto text-muted fw-bold" style="font-size: 0.85rem;">@Model.ViewCount Views</div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+        {
+            <img src="@Model.ImageUrl" class="img-fluid w-100 mb-5" style="object-fit: cover; border-radius: 8px;" alt="@Model.NewsTitle" />
+        }
+        
+        <div class="article-content" style="font-size: 1.15rem; line-height: 1.8; color: #333;">
+            @Html.Raw(Model.NewsContent?.Replace("\n", "<br/>"))
+        </div>
+        
+        @if (Model.Tags != null && Model.Tags.Any())
+        {
+            <div class="mt-5 pt-4 border-top">
+                <strong class="me-2" style="font-size: 0.9rem;">TAGS:</strong>
+                @foreach (var tag in Model.Tags)
+                {
+                    <span class="badge rounded-0 border text-dark me-1" style="font-size: 0.8rem;">@tag.TagName</span>
+                }
+            </div>
+        }
+
+        <div class="mt-4 text-muted text-uppercase" style="font-size: 0.8rem; font-weight: 600;">
+            <strong>SOURCE:</strong> @Model.NewsSource
+        </div>
+    </div>
+    
+    <div class="col-lg-4 pt-5 mt-lg-0 mt-4 border-start ps-lg-4">
+        <h4 class="mb-4 fw-bolder fs-5 text-uppercase">TRENDING NEWS</h4>
+        @if (ViewBag.TrendingNews != null)
+        {
+            foreach (var item in (IEnumerable<PhanChiThong_DataAccess.Models.NewsArticle>)ViewBag.TrendingNews)
+            {
+                <div class="d-flex mb-4 pb-4 border-bottom">
+                    <div class="pe-3 flex-grow-1">
+                        <a href="/Home/Details/@item.NewsArticleId" class="text-decoration-none">
+                            <h4 class="fw-bold card-title-hover" style="font-size: 1.05rem; line-height: 1.4;">@item.NewsTitle</h4>
+                        </a>
+                        <div class="text-muted text-uppercase mt-2" style="font-size: 0.7rem; font-weight: 600;">
+                            <span class="text-orange me-2">@item.Category?.CategoryName</span> @item.ViewCount Views
+                        </div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(item.ImageUrl)) {
+                        <div style="width: 100px; height: 80px; flex-shrink: 0;">
+                            <a href="/Home/Details/@item.NewsArticleId">
+                                <img src="@item.ImageUrl" class="w-100 h-100" style="object-fit: cover; border-radius: 4px;" alt="..." />
+                            </a>
+                        </div>
+                    }
+                </div>
+            }
+        }
+    </div>
+</div>

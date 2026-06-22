@@ -1,0 +1,23 @@
+@model IEnumerable<PhanChiThong_DataAccess.Models.NewsArticle>
+@{ ViewData["Title"] = "My History"; }
+<div class="card border-0 shadow-sm rounded-0 p-4 bg-white">
+    <h2 class="fw-bolder mb-4 text-uppercase">My News History</h2>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-dark">
+                <tr><th>ID</th><th>Title</th><th>Created Date</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model) {
+                    <tr>
+                        <td>@item.NewsArticleId</td><td class="fw-semibold">@item.NewsTitle</td><td>@item.CreatedDate?.ToString("yyyy-MM-dd")</td>
+                        <td>
+                            @if(item.NewsStatus == true) { <span class="badge badge-orange rounded-0">Active</span> }
+                            else { <span class="badge bg-secondary rounded-0">Inactive</span> }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

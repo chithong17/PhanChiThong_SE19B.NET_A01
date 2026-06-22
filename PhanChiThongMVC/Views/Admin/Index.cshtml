@@ -1,0 +1,63 @@
+@model IEnumerable<PhanChiThong_DataAccess.Models.SystemAccount>
+@{ ViewData["Title"] = "Manage Accounts"; }
+<div class="card border-0 shadow-sm rounded-0 p-4 bg-white">
+    <h2 class="fw-bolder mb-4 text-uppercase">Manage Accounts</h2>
+    <div class="mb-3">
+        <button class="btn btn-orange rounded-0 shadow-sm fw-bold" data-bs-toggle="modal" data-bs-target="#accountModal" onclick="clearForm()">
+            Create New Account
+        </button>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-dark">
+                <tr><th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model) {
+                    <tr>
+                        <td>@item.AccountId</td><td class="fw-semibold">@item.AccountName</td><td>@item.AccountEmail</td>
+                        <td>
+                            @if(item.AccountRole == 0) { <span class="badge bg-danger rounded-0">Admin</span> }
+                            else if(item.AccountRole == 1) { <span class="badge badge-orange rounded-0">Staff</span> }
+                            else { <span class="badge bg-secondary rounded-0">Lecturer</span> }
+                        </td>
+                        <td class="text-nowrap">
+                            <button class="btn btn-outline-dark btn-sm rounded-0 me-1" onclick="editAccount(@item.AccountId, '@item.AccountName', '@item.AccountEmail', @item.AccountRole, '@item.AccountPassword')" data-bs-toggle="modal" data-bs-target="#accountModal">Edit</button>
+                            <a href="/Admin/DeleteAccount/@item.AccountId" class="btn btn-outline-danger btn-sm rounded-0" onclick="return confirm('Delete this account?');">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="accountModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-0 border-0 shadow">
+      <form method="post" action="/Admin/SaveAccount">
+          <div class="modal-header bg-dark text-white rounded-0 border-0">
+              <h5 class="modal-title fw-bold text-uppercase">Account</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body p-4">
+              <input type="hidden" name="AccountId" id="AccountId" value="0" />
+              <div class="mb-3"><label class="fw-semibold">Name</label><input type="text" name="AccountName" id="AccountName" class="form-control rounded-0" required /></div>
+              <div class="mb-3"><label class="fw-semibold">Email</label><input type="email" name="AccountEmail" id="AccountEmail" class="form-control rounded-0" required /></div>
+              <div class="mb-3"><label class="fw-semibold">Role</label><select name="AccountRole" id="AccountRole" class="form-select rounded-0"><option value="1">Staff</option><option value="2">Lecturer</option></select></div>
+              <div class="mb-3"><label class="fw-semibold">Password</label><input type="password" name="AccountPassword" id="AccountPassword" class="form-control rounded-0" required /></div>
+          </div>
+          <div class="modal-footer border-0 bg-light">
+              <button type="submit" class="btn btn-dark rounded-0 px-4">Save</button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+@section Scripts {
+    <script>
+        function clearForm() { $('#AccountId').val('0'); $('#AccountName').val(''); $('#AccountEmail').val(''); $('#AccountRole').val('1'); $('#AccountPassword').val(''); }
+        function editAccount(id, name, email, role, pwd) { $('#AccountId').val(id); $('#AccountName').val(name); $('#AccountEmail').val(email); $('#AccountRole').val(role); $('#AccountPassword').val(pwd); }
+    </script>
+}

@@ -1,0 +1,94 @@
+/* Sports Magazine Design System */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+
+:root {
+    --primary-black: #000000;
+    --primary-white: #FFFFFF;
+    --accent-orange: #FF5722;
+    --text-heading: #111111;
+    --text-body: #333333;
+    --text-muted: #888888;
+    --bg-light: #F5F5F5;
+    --border-color: #EAEAEA;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    color: var(--text-body);
+    background-color: var(--bg-light);
+    margin-bottom: 0;
+}
+
+h1, h2, h3, h4, h5, h6, .nav-link {
+    font-weight: 700;
+    color: var(--text-heading);
+}
+
+.bg-dark h1, .bg-dark h2, .bg-dark h3, .bg-dark h4, .bg-dark h5, .bg-dark h6 {
+    color: var(--primary-white) !important;
+}
+
+th {
+    font-weight: 700;
+}
+
+.table-dark th {
+    color: var(--primary-white) !important;
+}
+
+a {
+    color: var(--text-heading);
+    text-decoration: none;
+}
+a:hover {
+    color: var(--accent-orange);
+}
+
+.bg-black {
+    background-color: var(--primary-black) !important;
+}
+
+/* Header */
+.navbar-brand {
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 800;
+}
+
+/* Footer */
+footer {
+    background-color: var(--primary-black);
+    color: var(--primary-white);
+    padding: 60px 0;
+    margin-top: auto;
+}
+
+/* Utilities */
+.section-padding {
+    padding: 40px 0;
+}
+
+.text-orange {
+    color: var(--accent-orange) !important;
+}
+
+.badge-orange {
+    background-color: var(--accent-orange);
+    color: white;
+}
+
+.btn-orange {
+    background-color: var(--accent-orange);
+    color: white;
+    border: none;
+}
+.btn-orange:hover {
+    background-color: #e64a19;
+    color: white;
+}
+
+.card-title-hover:hover {
+    color: var(--accent-orange);
+    cursor: pointer;
+}

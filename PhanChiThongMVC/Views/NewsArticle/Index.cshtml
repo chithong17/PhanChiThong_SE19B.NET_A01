@@ -1,0 +1,150 @@
+@model IEnumerable<PhanChiThong_DataAccess.Models.NewsArticle>
+@{ ViewData["Title"] = "Manage News"; }
+<div class="card border-0 shadow-sm rounded-0 p-4 bg-white">
+    <h2 class="fw-bolder mb-4 text-uppercase">Manage News Articles</h2>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show rounded-0 shadow-sm" role="alert">
+            <strong>Error:</strong> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <form method="get" class="mb-4 d-flex">
+        <input type="text" name="searchTitle" class="form-control rounded-0 me-2" placeholder="Search by title..." />
+        <button type="submit" class="btn btn-dark rounded-0 px-4">Search</button>
+    </form>
+
+    <div class="mb-3">
+        <button class="btn btn-orange rounded-0 shadow-sm fw-bold" data-bs-toggle="modal" data-bs-target="#newsModal" onclick="clearForm()">
+            <i class="bi bi-plus-lg"></i> Create New Article
+        </button>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-dark">
+                <tr><th>ID</th><th>Title</th><th>Category</th><th>Views</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model) {
+                    <tr>
+                        <td>@item.NewsArticleId</td><td class="fw-semibold">@item.NewsTitle</td><td>@(item.Category?.CategoryName)</td><td>@item.ViewCount</td>
+                        <td>
+                            @if(item.NewsStatus == true) { <span class="badge badge-orange rounded-0">Active</span> }
+                            else { <span class="badge bg-secondary rounded-0">Inactive</span> }
+                        </td>
+                        <td class="text-nowrap">
+                            <button class="btn btn-outline-dark btn-sm rounded-0 me-1" onclick="editNewsById('@item.NewsArticleId')" data-bs-toggle="modal" data-bs-target="#newsModal">Edit</button>
+                            <a href="/NewsArticle/Delete/@item.NewsArticleId" class="btn btn-outline-danger btn-sm rounded-0" onclick="return confirm('Delete this article?');">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="newsModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content rounded-0 border-0 shadow">
+      <form method="post" action="/NewsArticle/Save" enctype="multipart/form-data">
+          <div class="modal-header bg-dark text-white rounded-0 border-0">
+              <h5 class="modal-title fw-bold text-uppercase">News Article</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body p-4">
+              <input type="hidden" name="IsUpdate" id="IsUpdate" value="false" />
+              <div class="mb-3"><label class="fw-semibold">ID</label><input type="text" name="NewsArticleId" id="NewsArticleId" class="form-control rounded-0" required /></div>
+              <div class="mb-3"><label class="fw-semibold">Title</label><input type="text" name="NewsTitle" id="NewsTitle" class="form-control rounded-0" required /></div>
+              <div class="mb-3"><label class="fw-semibold">Headline</label><input type="text" name="Headline" id="Headline" class="form-control rounded-0" required /></div>
+              <div class="mb-3">
+                  <label class="fw-semibold">News Image</label>
+                  <div id="imagePreviewContainer" class="mb-2" style="display:none;">
+                      <img id="imagePreview" src="" alt="Current Image" style="max-height: 150px; border: 1px solid #ddd; padding: 3px;" />
+                  </div>
+                  <input type="file" name="ImageFile" id="ImageFile" class="form-control rounded-0" accept="image/*" />
+                  <input type="hidden" name="ImageUrl" id="HiddenImageUrl" />
+              </div>
+              <div class="mb-3"><label class="fw-semibold">Content</label><textarea name="NewsContent" id="NewsContent" class="form-control rounded-0" rows="4"></textarea></div>
+              <div class="mb-3"><label class="fw-semibold">Source</label><input type="text" name="NewsSource" id="NewsSource" class="form-control rounded-0" /></div>
+              <div class="mb-3">
+                  <label class="fw-semibold">Tags</label>
+                  <div>
+                      @if (ViewBag.AllTags != null)
+                      {
+                          foreach (var tag in ViewBag.AllTags)
+                          {
+                              <div class="form-check form-check-inline">
+                                  <input class="form-check-input tag-checkbox rounded-0" type="checkbox" name="TagIds" value="@tag.TagId" id="tag_@tag.TagId">
+                                  <label class="form-check-label" for="tag_@tag.TagId">@tag.TagName</label>
+                              </div>
+                          }
+                      }
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-md-6 mb-3">
+                      <label class="fw-semibold">Category</label>
+                      <select name="CategoryId" id="CategoryId" class="form-select rounded-0">
+                          @foreach (var cat in ViewBag.Categories) { <option value="@cat.CategoryId">@cat.CategoryName</option> }
+                      </select>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                      <label class="fw-semibold">Status</label>
+                      <select name="NewsStatus" id="NewsStatus" class="form-select rounded-0">
+                          <option value="true">Active</option><option value="false">Inactive</option>
+                      </select>
+                  </div>
+              </div>
+          </div>
+          <div class="modal-footer border-0 bg-light">
+              <button type="submit" class="btn btn-dark rounded-0 px-4">Save</button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+@section Scripts {
+    <script>
+        var articlesData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Select(a => new {
+            a.NewsArticleId, a.NewsTitle, a.Headline, a.NewsContent, a.NewsSource, a.CategoryId, a.NewsStatus, a.ImageUrl, TagIds = a.Tags?.Select(t => t.TagId) ?? new int[]{}
+        })));
+        
+        function editNewsById(id) {
+            $('#IsUpdate').val('true');
+            var a = articlesData.find(x => x.NewsArticleId === id);
+            $('#NewsArticleId').val(a.NewsArticleId).prop('readonly', true);
+            $('#NewsTitle').val(a.NewsTitle);
+            $('#Headline').val(a.Headline);
+            $('#NewsContent').val(a.NewsContent);
+            $('#NewsSource').val(a.NewsSource);
+            $('#CategoryId').val(a.CategoryId);
+            $('#NewsStatus').val(a.NewsStatus ? 'true' : 'false');
+            $('#HiddenImageUrl').val(a.ImageUrl);
+            if (a.ImageUrl) {
+                $('#imagePreview').attr('src', a.ImageUrl);
+                $('#imagePreviewContainer').show();
+            } else {
+                $('#imagePreviewContainer').hide();
+            }
+            $('#ImageFile').val('');
+            $('.tag-checkbox').prop('checked', false);
+            a.TagIds.forEach(tId => { $('#tag_' + tId).prop('checked', true); });
+        }
+        
+        function clearForm() { 
+            $('#IsUpdate').val('false');
+            $('#NewsArticleId').val('').prop('readonly', false); 
+            $('#NewsTitle').val(''); $('#Headline').val(''); 
+            $('#NewsContent').val(''); 
+            $('#NewsSource').val(''); 
+            $('#NewsStatus').val('true'); 
+            $('#HiddenImageUrl').val(''); 
+            $('#ImageFile').val('');
+            $('#imagePreviewContainer').hide();
+            $('.tag-checkbox').prop('checked', false);
+        }
+    </script>
+}
